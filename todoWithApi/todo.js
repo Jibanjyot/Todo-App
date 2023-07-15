@@ -21,7 +21,7 @@ function fetchAndStoreTodo() {
                 uniqueNo: todosCount,
                 isChecked: false
             };
-            todoList.push(newTodo);
+            // todoList.push(newTodo);
             createAndAppendTodo(newTodo);
             console.log(e['title']);
         });
