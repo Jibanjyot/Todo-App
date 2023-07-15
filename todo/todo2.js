@@ -87,6 +87,44 @@ function onDeleteTodo(todoId) {
     todoList.splice(deleteElementIndex, 1);
 }
 
+
+function onEditTodo(labelId, todoId) {
+    let todoElement = document.getElementById(labelId);
+    let text = todoElement.innerText;
+    var input = document.createElement("input");
+    input.type = "text";
+    input.value = text;
+
+    todoElement.innerText = "";
+    todoElement.appendChild(input);
+
+    input.focus();
+
+    document.addEventListener("click", function (event) {
+        var container = document.getElementById(todoId);
+        let editElement = todoList.find(function (eachTodo) {
+            let eachTodoId = "todo" + eachTodo.uniqueNo;
+            if (eachTodoId === todoId) {
+                // eachTodo['text'] = input.value;
+                return true;
+            } else {
+                return false;
+            }
+        });
+        console.log(editElement);
+        editElement.text = input.value;
+        console.log(todoList);
+        if (!container.contains(event.target)) {
+            todoElement.innerText = input.value;
+        }
+    });
+
+
+
+    // todoList.splice(deleteElementIndex, 1);
+}
+
+
 function createAndAppendTodo(todo) {
     let todoId = "todo" + todo.uniqueNo;
     let checkboxId = "checkbox" + todo.uniqueNo;
@@ -122,6 +160,19 @@ function createAndAppendTodo(todo) {
         labelElement.classList.add("checked");
     }
     labelContainer.appendChild(labelElement);
+
+    let editIconContainer = document.createElement("div");
+    editIconContainer.classList.add("delete-icon-container");
+    labelContainer.appendChild(editIconContainer);
+
+    let editIcon = document.createElement("i");
+    editIcon.classList.add("fas", "fa-edit", "edit-icon");
+
+    editIcon.onclick = function () {
+        onEditTodo(labelId, todoId);
+    };
+
+    editIconContainer.appendChild(editIcon);
 
     let deleteIconContainer = document.createElement("div");
     deleteIconContainer.classList.add("delete-icon-container");

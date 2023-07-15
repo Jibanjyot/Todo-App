@@ -110,7 +110,12 @@
     width: 18%;
 }
 
-.delete-icon {
+.edit-icon {
+    padding: 15px;
+    /* padding-left: 20vw; */
+}
+
+.delete-icon{
     padding: 15px;
 }
 
