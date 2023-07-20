@@ -9,3 +9,4 @@
 
 ## Todo with API.
 
+* The api will be fetched only when there are no todo item in the local Storage. 

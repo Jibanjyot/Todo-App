@@ -33,7 +33,7 @@ function fetchAndStoreTodo() {
 
 }
 
-fetchAndStoreTodo()
+
 
 function getTodoListFromLocalStorage() {
     let stringifiedTodoList = localStorage.getItem("todoList");
@@ -46,6 +46,11 @@ function getTodoListFromLocalStorage() {
 }
 
 let todoList = getTodoListFromLocalStorage();
+
+if(!todoList.length){
+    fetchAndStoreTodo();
+}
+
 let todosCount = todoList.length;
 
 saveTodoButton.onclick = function () {
