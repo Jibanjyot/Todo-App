@@ -30,10 +30,10 @@
             </h1>
             <input type="text" id="todoUserInput" class="todo-user-input" placeholder="What needs to be done?" />
 
-            <div style="width: 20%; padding-bottom: 10px;">
+            <!-- <div style="width: 20%; padding-bottom: 10px;">
                 <input type="text" id="categoryInput" placeholder="Add More Categories">
                 <button id="addCategoryButton">Add Category</button>
-            </div>
+            </div> -->
             <span>
                 <input type="datetime-local" id="dateInput" name="dateInput">
 
@@ -70,7 +70,7 @@
                 <button id="searchTaskButton">Search</button>
             </div>
 
-            <ul class="todo-items-container" id="todoItemsContainer"></ul>
+            <ul class="todo-items-container" ondragover="onDragOver(event)" ondrop="onDrop(event)" id="todoItemsContainer"></ul>
             <button class="button" id="saveTodoButton">Save</button>
             <h1 id="popUpMessage"> </h1>
         </div>

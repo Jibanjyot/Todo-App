@@ -1,31 +1,48 @@
-function convertToDateObject(dateString) {
-  // Method 1: Using Date.parse()
-  const parsedDate = Date.parse(dateString);
-  if (!isNaN(parsedDate)) {
-    // Date.parse() successfully parsed the date string
-    return new Date(parsedDate);
-  }
+// Get the todo list container
+const todoList = document.getElementById('todoList');
 
-  // Method 2: Using new Date()
-  const dateObject = new Date(dateString);
-  if (!isNaN(dateObject.getTime())) {
-    // new Date() successfully created a Date object
-    return dateObject;
-  }
+// Add event listeners for drag and drop functionality
+todoList.addEventListener('dragstart', handleDragStart);
+todoList.addEventListener('dragover', handleDragOver);
+todoList.addEventListener('drop', handleDrop);
 
-  // If both methods fail to parse the date string, return null or an appropriate default value
-  return null;
+// Function to handle dragstart event
+function handleDragStart(event) {
+  const target = event.target;
+  if (target.classList.contains('task') || target.classList.contains('subtask')) {
+    event.dataTransfer.setData('text/plain', target.id);
+  }
 }
 
-// Examples:
-const dateStr1 = "2023-01-13T15:30:00";
-const dateStr2 = "January 13, 2023 3:30 PM";
-const dateStr3 = "13th Jan 2023";
-const dateStr4 = "2023-01-13";
-const dateStr5 = "Invalid Date String";
+// Function to handle dragover event
+function handleDragOver(event) {
+  event.preventDefault();
+}
 
-console.log(convertToDateObject(dateStr1)); // Output: 2023-01-13T15:30:00.000Z
-console.log(convertToDateObject(dateStr2)); // Output: 2023-01-13T15:30:00.000Z
-console.log(convertToDateObject(dateStr3)); // Output: 2023-01-13T00:00:00.000Z
-console.log(convertToDateObject(dateStr4)); // Output: 2023-01-13T00:00:00.000Z
-console.log(convertToDateObject(dateStr5)); // Output: null (or an appropriate default value)
+// Function to handle drop event
+function handleDrop(event) {
+  event.preventDefault();
+  const data = event.dataTransfer.getData('text/plain');
+  const target = event.target;
+
+  if (target.classList.contains('task') || target.classList.contains('subtask')) {
+    const draggedElement = document.getElementById(data);
+
+    // Check if dragged element and target are in the same list (tasks or subtasks)
+    if (draggedElement.parentElement === target.parentElement) {
+      // If they are in the same list, rearrange them by inserting the dragged element before or after the target
+      const parentList = target.parentElement;
+      const targetIndex = Array.from(parentList.children).indexOf(target);
+      const draggedIndex = Array.from(parentList.children).indexOf(draggedElement);
+
+      if (draggedIndex < targetIndex) {
+        parentList.insertBefore(draggedElement, target.nextSibling);
+      } else {
+        parentList.insertBefore(draggedElement, target);
+      }
+    } else {
+      // If they are in different lists, move the dragged element to the target's list
+      target.parentElement.appendChild(draggedElement);
+    }
+  }
+}

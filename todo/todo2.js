@@ -20,17 +20,6 @@ let sortedList = [...todoList];
 let todosCount = todoList.length;
 
 
-let categorydroppdownOptions = [
-    { value: 'category1', text: 'Category 1' },
-    { value: 'category2', text: 'Category 2' },
-    { value: 'category3', text: 'Category 3' },
-    { value: 'pending', text: 'Pending' },
-    { value: 'completed', text: 'Completed' }
-];
-
-
-
-
 saveTodoButton.onclick = function () {
     localStorage.setItem("todoList", JSON.stringify(todoList));
     let popUpMessage = document.getElementById("popUpMessage");
@@ -49,7 +38,7 @@ function onAddTodo() {
     // get due date
     let dueDateValue = document.getElementById('dateInput').value;
 
-    if(!dueDateValue){
+    if (!dueDateValue) {
         dueDateValue = parseDueDate(userInputValue);
     }
 
@@ -172,7 +161,13 @@ function createAndAppendTodo(todo) {
 
     let todoElement = document.createElement("li");
     todoElement.classList.add("todo-item-container");
+    todoElement.setAttribute('draggable', 'true');
     todoElement.id = todoId;
+    todoElement.setAttribute('ondragstart', 'onDragStart(event)');
+    todoElement.addEventListener('dragstart', onDragStart);
+    todoElement.addEventListener('dragover', onDragOver);
+    todoElement.addEventListener('drop', onDrop);
+
     todoItemsContainer.appendChild(todoElement);
 
     let inputElement = document.createElement("input");
@@ -386,6 +381,8 @@ function createAndAppendSubTodo(subTodo, todoId) {
     let subtodoElement = document.createElement("li");
     subtodoElement.classList.add("todo-item-container");
     subtodoElement.id = subtodoId;
+    subtodoElement.setAttribute('draggable', 'true');
+    subtodoElement.addEventListener('dragstart', onSubTodoDragStart);
     subtodoItemsContainer.appendChild(subtodoElement);
 
     let inputElement = document.createElement("input");
@@ -699,7 +696,7 @@ searchButton.onclick = function () {
             }
 
             // console.log(todoItem.subTasks);
-            if (todoItem.subTasks && todoItem.subTasks.some(subtask => 
+            if (todoItem.subTasks && todoItem.subTasks.some(subtask =>
                 subtask.text.toLowerCase().includes(searchQuery))) {
                 return true;
             }
@@ -754,20 +751,117 @@ function parseDueDate(inputText) {
     console.log(inputText);
     // Regular expression to match common date formats
     const datePattern = /(\b(?:\d{1,2}(?:st|nd|rd|th)?\s+(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s*\d{2,4}|tomorrow|today)\b|\b(?:\d{1,2}:\d{2}(?:\s*(?:am|pm))?)\b)/i;
-  
-    const match = inputText.match(datePattern);
-  
-    if (match) {
-      // If a date is found in the input text, extract it
-      console.log(match[0]);
-      let dueDate = Date.parse(match[0]);
 
-      if(!isNaN(dueDate)){
-        return dueDate;
-      }
-      return match[0];
+    const match = inputText.match(datePattern);
+
+    if (match) {
+        // If a date is found in the input text, extract it
+        console.log(match[0]);
+        let dueDate = Date.parse(match[0]);
+
+        if (!isNaN(dueDate)) {
+            return dueDate;
+        }
+        return match[0];
     }
-    
+
     return '';
 
-  }
+}
+
+
+
+let draggedElement = null;
+
+function onDragStart(event) {
+    draggedElement = event.target.closest('.todo-item-container');
+    console.log(draggedElement.classList);
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function onDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+}
+
+function onDrop(event) {
+    event.preventDefault();
+    let droppedElement = event.target.closest('.todo-item-container');
+    console.log(droppedElement.classList);
+    if (draggedElement && droppedElement) {
+        const fromIndex = Array.from(todoItemsContainer.children).indexOf(draggedElement);
+        const toIndex = Array.from(todoItemsContainer.children).indexOf(droppedElement);
+
+        // Reorder the todoList based on the dragged and dropped positions
+        const [removed] = todoList.splice(fromIndex, 1);
+        todoList.splice(toIndex, 0, removed);
+
+        // Clear and re-render the todo items
+        todoItemsContainer.innerHTML = '';
+        todoList.forEach(todoItem => {
+            createAndAppendTodo(todoItem);
+        });
+        localStorage.setItem("todoList", JSON.stringify(todoList));
+        draggedElement = null;
+    }
+}
+
+// Add event listeners for drag events on todo and subtask elements
+todoItemsContainer.addEventListener('dragstart', onDragStart);
+todoItemsContainer.addEventListener('dragover', onDragOver);
+todoItemsContainer.addEventListener('drop', onDrop);
+
+
+
+
+
+let draggedSubTodoElement = null;
+function onSubTodoDragStart(event) {
+    draggedSubTodoElement = event.target.closest('.todo-item-container');;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/html', draggedSubTodoElement.innerHTML);
+}
+
+function onSubTodoDragOver(event) {
+    event.preventDefault();
+}
+
+function onSubTodoDrop(event) {
+    event.preventDefault();
+    let droppedSubTodoElement = event.target.closest('.todo-item-container');
+    console.log(draggedSubTodoElement);
+    console.log(droppedSubTodoElement);
+    if (draggedSubTodoElement && droppedSubTodoElement) {
+        const draggedsubTodoId = draggedSubTodoElement.getAttribute('id');
+        const droppedsubTodoId = droppedSubTodoElement.getAttribute('id');
+        //   console.log(subTodoId);
+        let flag = false;
+        for (todo of todoList) {
+            for (subtask of todo.subTasks) {
+                if ("subtodo"+subtask.id === draggedsubTodoId) {
+                    flag = true;
+                }
+            }
+            if(flag){
+                const fromSubtaskId = todo.subTasks.findIndex(subtask => 'subtodo' + subtask.id === draggedsubTodoId);
+                const toSubtaskId = todo.subTasks.findIndex(subtask => 'subtodo' + subtask.id === droppedsubTodoId);
+                const [removed] = todo.subTasks.splice(fromSubtaskId, 1);
+                todo.subTasks.splice(toSubtaskId, 0, removed);
+                const subtodoItemsContainer = droppedSubTodoElement.parentElement;
+                subtodoItemsContainer.innerHTML = '<h2>Sub Tasks</h2>';
+                todo.subTasks.forEach(subtask =>{
+                    createAndAppendSubTodo(subtask, "todo"+todo.uniqueNo);
+                }
+                );
+
+                break;
+            }
+        }
+
+        draggedSubTodoElement = null;
+    }
+}
+
+// Add event listeners for subtask drag and drop
+document.addEventListener('dragover', onSubTodoDragOver);
+document.addEventListener('drop', onSubTodoDrop);
