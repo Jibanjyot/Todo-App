@@ -1,0 +1,65 @@
+/* Styles for the todo app */
+.todo-app {
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.todo-input {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.todo-input input {
+  flex: 1;
+  padding: 5px;
+}
+
+.todo-input button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.todo-list-item {
+  margin-bottom: 5px;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.tags {
+  margin-top: 5px;
+}
+
+.tag {
+  display: inline-block;
+  padding: 2px 5px;
+  background-color: #f1f1f1;
+  border-radius: 3px;
+  margin-right: 5px;
+}
+
+/* Styles for the filter */
+.filter {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.filter label {
+  margin-right: 5px;
+}
+
+.filter select {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+}
