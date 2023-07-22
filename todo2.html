@@ -33,19 +33,10 @@
                 <input type="datetime-local" id="dateInput" name="dateInput">
 
                 <select id="categoryDropdown">
-                    <option value="">Category</option>
-                    <option value="category1">Category 1</option>
-                    <option value="category2">Category 2</option>
-                    <option value="category3">Category 3</option>
 
                 </select>
 
                 <select id="priorityDropdown">
-                    <option value="">Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-
                 </select>
 
                 <input type="text" id="tagsInput" class="todo-user-input" placeholder="Enter Tags (comma separated)" />
@@ -56,28 +47,21 @@
                 <h1 class="create-task-heading">
                     Edit <span class="create-task-heading-subpart">Task</span>
                 </h1>
-                <input type="text" id="editTodoUserInput" class="todo-user-input"/>
+                <input type="text" id="editTodoUserInput" class="todo-user-input" />
                 <span>
                     <input type="datetime-local" id="editDateInput" name="dateInput">
-    
+
                     <select id="editCategoryDropdown">
-                        <option value="">Category</option>
-                        <option value="category1">Category 1</option>
-                        <option value="category2">Category 2</option>
-                        <option value="category3">Category 3</option>
-    
+
                     </select>
-    
+
                     <select id="editPriorityDropdown">
-                        <option value="">Priority</option>
-                        <option value="low">Low</option>
-                        <option value="medium">Medium</option>
-                        <option value="high">High</option>
-    
+
                     </select>
-    
-                    <input type="text" id="editTagsInput" class="todo-user-input" placeholder="Enter Tags (comma separated)" />
-    
+
+                    <input type="text" id="editTagsInput" class="todo-user-input"
+                        placeholder="Enter Tags (comma separated)" />
+
                 </span>
                 <button class="button" id="editTodoButton">Edit</button>
             </div>
@@ -85,13 +69,19 @@
             <h1 class="todo-items-heading">
                 My <span class="todo-items-heading-subpart">Tasks</span>
             </h1>
-            <div>
+            <div style="display: flex;align-items: center;justify-content: space-between;">
                 <div id="filter-container">
                 </div>
+                <input type="datetime-local" id="filterStartDateInput" name="dateInput">
+                <span>to</span>
+                <input type="datetime-local" id="filterEndDateInput" name="dateInput">
                 <div id="sort-container">
                 </div>
-                <input type="text" id="searchInput" placeholder="Search tasks">
-                <button id="searchTaskButton" >Search</button>
+                <div>
+                    <input type="text" id="searchInput" placeholder="Search tasks">
+                    <button id="searchTaskButton">Search</button>
+                </div>
+
             </div>
 
             <ul class="todo-items-container" ondragover="onDragOver(event)" ondrop="onDrop(event)"

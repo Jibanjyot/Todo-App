@@ -59,7 +59,8 @@ function onAddTodo() {
     let newTodo = {
         text: userInputValue,
         uniqueNo: todosCount,
-        dueDate: dueDateValue,
+        dueDate: changeDateFormat(dueDateValue),
+        originalDueDate: dueDateValue,
         category: categoryValue,
         priority: priorityValue,
         isChecked: false,
@@ -101,19 +102,19 @@ function onTodoStatusChange(checkboxId, labelId, todoId) {
 }
 
 
-function onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId,todoId) {
+function onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId, todoId) {
     let checkboxElement = document.getElementById(subcheckboxId);
     let labelElement = document.getElementById(sublabelId);
     labelElement.classList.toggle("checked");
 
-    for(todo of todoList){
-        if("todo"+todo.uniqueNo === todoId){
-            for(subtodo of todo.subTasks){
-                if("subtodo"+subtodo.id === subtodoId){
-                    if(subtodo.isChecked === true){
+    for (todo of todoList) {
+        if ("todo" + todo.uniqueNo === todoId) {
+            for (subtodo of todo.subTasks) {
+                if ("subtodo" + subtodo.id === subtodoId) {
+                    if (subtodo.isChecked === true) {
                         subtodo.isChecked = false;
                     }
-                    else{
+                    else {
                         subtodo.isChecked = true;
                     }
                     break;
@@ -121,7 +122,7 @@ function onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId,todoId) {
             }
         }
     }
-    
+
 }
 
 
@@ -286,7 +287,8 @@ function createAndAppendTodo(todo) {
 
     // display due date and category
     const todoDetails = document.createElement('div');
-    todoDetails.textContent = "Due Date: " + todo.dueDate + ", Category: " + todo.category + ", Priority: " + todo.priority;
+    todoDetails.innerHTML = "<div class='detailsHolder'><p class='dueDateholder'><span class='detailsText'>Due Date: </span>" + todo.dueDate + "</p>" + "<p class='categoryHolder'><span class='detailsText'>Category: </span>" + todo.category + "</p>" + "<p class='priorityHolder'><span class='detailsText'>Priority: </span>" + todo.priority + "</p></div>"
+    // todoDetails.textContent = "Due Date: " + todo.dueDate + ", Category: " + todo.category + ", Priority: " + todo.priority;
     labelPreContainer.appendChild(todoDetails);
 
     if (todo.tags.length > 0) {
@@ -338,7 +340,7 @@ function onEditDetailsTodo(todo) {
     editTodoUserInput.value = todo.text;
 
     let editDateInput = document.getElementById("editDateInput");
-    editDateInput.value = todo.dueDate;
+    editDateInput.value = todo.originalDueDate;
 
     let editCategoryDropdown = document.getElementById("editCategoryDropdown");
     editCategoryDropdown.value = todo.category;
@@ -352,7 +354,7 @@ function onEditDetailsTodo(todo) {
     editTodoContainer.scrollIntoView({ behavior: 'smooth' });
 
     let editTodoButton = document.getElementById("editTodoButton");
-    editTodoButton.onclick = function() {
+    editTodoButton.onclick = function () {
 
         let edituserInputValue = editTodoUserInput.value;
 
@@ -363,18 +365,19 @@ function onEditDetailsTodo(todo) {
 
         todo.text = edituserInputValue;
         console.log(todo);
-        todo.dueDate = editDateInput.value;
-        todo.category = editCategoryDropdown.value;
+        todo.dueDate = changeDateFormat(editDateInput.value);
+        todo.originalDueDate = editDateInput.value,
+            todo.category = editCategoryDropdown.value;
         todo.priority = editPriorityDropdown.value;
-        todo.tags =  editTagsInput.value.split(',').map(tag => tag.trim());
+        todo.tags = editTagsInput.value.split(',').map(tag => tag.trim());
 
-        let todoItemsContainer1  = document.getElementById("todoItemsContainer");
+        let todoItemsContainer1 = document.getElementById("todoItemsContainer");
         todoItemsContainer1.innerHTML = "";
-        todoList.forEach(todo =>{
+        todoList.forEach(todo => {
             createAndAppendTodo(todo);
         });
 
-        let todoItemContainer = document.getElementById("todo"+todo.uniqueNo);
+        let todoItemContainer = document.getElementById("todo" + todo.uniqueNo);
         todoItemContainer.scrollIntoView({ behavior: 'smooth' });
 
 
@@ -481,8 +484,8 @@ function createAndAppendSubTodo(subTodo, todoId) {
     inputElement.id = subcheckboxId;
     inputElement.checked = subTodo.isChecked;
 
-    inputElement.onclick = function() {
-        onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId,todoId);
+    inputElement.onclick = function () {
+        onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId, todoId);
     };
 
     inputElement.classList.add("checkbox-input");
@@ -577,7 +580,8 @@ let categoryfilterOptions = [
     { value: 'category2', text: 'Category 2' },
     { value: 'category3', text: 'Category 3' },
     { value: 'pending', text: 'Pending' },
-    { value: 'completed', text: 'Completed' }
+    { value: 'completed', text: 'Completed' },
+    { value: 'missed', text: 'Missed' }
 ];
 const categoryfilterSelect = document.createElement('select');
 categoryfilterSelect.setAttribute('id', 'categoryFilter');
@@ -618,10 +622,30 @@ function applyCategoryFilter() {
             return;
         }
 
+        if (categoryfilter === "missed") {
+            const currentDate = new Date();
+            todoList.forEach(todoItem => {
+                if (!todoItem.isChecked && new Date(todoItem.originalDueDate) < currentDate) {
+                    createAndAppendTodo(todoItem);
+                }
+            });
+            return;
+        }
+
+
+
         todoList.forEach(todoItem => {
             if (todoItem.category === categoryfilter) {
                 createAndAppendTodo(todoItem);
             }
+        });
+    }
+    else {
+        while (todoListFromPage.firstChild) {
+            todoListFromPage.removeChild(todoListFromPage.firstChild);
+        }
+        todoList.forEach(todoItem => {
+            createAndAppendTodo(todoItem);
         });
     }
 
@@ -660,6 +684,14 @@ function applypriorityFilter() {
             if (todoItem.priority === priorityfilter) {
                 createAndAppendTodo(todoItem);
             }
+        });
+    }
+    else {
+        while (todoListFromPage.firstChild) {
+            todoListFromPage.removeChild(todoListFromPage.firstChild);
+        }
+        todoList.forEach(todoItem => {
+            createAndAppendTodo(todoItem);
         });
     }
 
@@ -956,4 +988,106 @@ function onSubTodoDrop(event) {
 // Add event listeners for subtask drag and drop
 document.addEventListener('dragover', onSubTodoDragOver);
 document.addEventListener('drop', onSubTodoDrop);
+
+
+function changeDateFormat(datetimeString) {
+    const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+    };
+
+    return Intl.DateTimeFormat("en-US", options).format(new Date(datetimeString));
+}
+
+
+
+let filterStartDateInput = document.getElementById("filterStartDateInput");
+filterStartDateInput.onchange = onFilterDateChange;
+
+let filterEndDateInput = document.getElementById("filterEndDateInput");
+filterEndDateInput.onchange = onFilterDateChange;
+
+function onFilterDateChange() {
+    if (!filterStartDateInput.value && !filterEndDateInput.value) {
+        return;
+    }
+    let startDate = filterStartDateInput.value;
+    let endDate = filterEndDateInput.value;
+
+    const startDateTime = new Date(startDate).getTime();
+    const endDateTime = new Date(endDate).getTime();
+
+    const todosInRange = todoList.filter(todoItem => {
+        const dueDateTime = new Date(todoItem.originalDueDate).getTime();
+        return dueDateTime >= startDateTime && dueDateTime <= endDateTime;
+    });
+    const todoListFromPage = document.getElementById('todoItemsContainer');
+    while (todoListFromPage.firstChild) {
+        todoListFromPage.removeChild(todoListFromPage.firstChild);
+    }
+    todosInRange.forEach(todoItem => {
+        createAndAppendTodo(todoItem);
+    });
+}
+
+
+
+// add categories
+const categories = [
+    { value: "", text: "Category" },
+    { value: "category1", text: "Category 1" },
+    { value: "category2", text: "Category 2" },
+    { value: "category3", text: "Category 3" }
+];
+
+// Get the select element by its id
+const categoryDropdown = document.getElementById("categoryDropdown");
+const editCategoryDropdown = document.getElementById("editCategoryDropdown");
+
+// Create and add options to the select element using the categories array
+categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    categoryDropdown.appendChild(option);
+});
+
+categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    editCategoryDropdown.appendChild(option);
+});
+
+
+
+const priorities = [
+    { value: "", text: "Priority" },
+    { value: "low", text: "Low" },
+    { value: "medium", text: "Medium" },
+    { value: "high", text: "High" }
+];
+
+// Get the select element by its id
+const priorityDropdown = document.getElementById("priorityDropdown");
+const editPriorityDropdown = document.getElementById("editPriorityDropdown");
+
+// Create and add options to the select element using the categories array
+priorities.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    priorityDropdown.appendChild(option);
+});
+priorities.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    editPriorityDropdown.appendChild(option);
+});
+
 
