@@ -100,6 +100,34 @@ function onTodoStatusChange(checkboxId, labelId, todoId) {
     }
 }
 
+
+function onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId,todoId) {
+    let checkboxElement = document.getElementById(subcheckboxId);
+    let labelElement = document.getElementById(sublabelId);
+    labelElement.classList.toggle("checked");
+
+    for(todo of todoList){
+        if("todo"+todo.uniqueNo === todoId){
+            for(subtodo of todo.subTasks){
+                if("subtodo"+subtodo.id === subtodoId){
+                    if(subtodo.isChecked === true){
+                        subtodo.isChecked = false;
+                    }
+                    else{
+                        subtodo.isChecked = true;
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+}
+
+
+
+
+
 function onDeleteTodo(todoId) {
     let todoElement = document.getElementById(todoId);
     todoItemsContainer.removeChild(todoElement);
@@ -257,7 +285,7 @@ function createAndAppendTodo(todo) {
 
 
     // display due date and category
-    const todoDetails = document.createElement('p');
+    const todoDetails = document.createElement('div');
     todoDetails.textContent = "Due Date: " + todo.dueDate + ", Category: " + todo.category + ", Priority: " + todo.priority;
     labelPreContainer.appendChild(todoDetails);
 
@@ -279,9 +307,11 @@ function createAndAppendTodo(todo) {
     addIconContainer.classList.add("add-icon-container");
     labelContainer.appendChild(addIconContainer);
 
+
+
     let addIcon = document.createElement("button");
     // addIcon.innerHTML = "<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' class='add-icon' fill='currentColor' viewBox='0 0 16 16'> <path d='M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z'/></svg>"
-    addIcon.textContent = "Add Subtask"
+    addIcon.textContent = "View Subtask";
     addIcon.classList.add("add-icon");
     addIconContainer.appendChild(addIcon);
 
@@ -289,7 +319,68 @@ function createAndAppendTodo(todo) {
         onAddSubTodo(todo);
     };
 
+    const editTask = document.createElement("button");
+    editTask.textContent = 'Edit Details';
+    editTask.classList.add("add-icon");
+    labelContainer.appendChild(editTask);
+    editTask.onclick = function () {
+        onEditDetailsTodo(todo);
+    };
 
+
+}
+
+function onEditDetailsTodo(todo) {
+    let editTodoContainer = document.getElementById("editTodoContainer");
+    editTodoContainer.style.display = "block";
+
+    let editTodoUserInput = document.getElementById("editTodoUserInput");
+    editTodoUserInput.value = todo.text;
+
+    let editDateInput = document.getElementById("editDateInput");
+    editDateInput.value = todo.dueDate;
+
+    let editCategoryDropdown = document.getElementById("editCategoryDropdown");
+    editCategoryDropdown.value = todo.category;
+
+    let editPriorityDropdown = document.getElementById("editPriorityDropdown");
+    editPriorityDropdown.value = todo.priority;
+
+    let editTagsInput = document.getElementById("editTagsInput");
+    editTagsInput.value = todo.tags.join(",");
+
+    editTodoContainer.scrollIntoView({ behavior: 'smooth' });
+
+    let editTodoButton = document.getElementById("editTodoButton");
+    editTodoButton.onclick = function() {
+
+        let edituserInputValue = editTodoUserInput.value;
+
+        if (edituserInputValue === "") {
+            alert("Enter Valid Text");
+            return;
+        }
+
+        todo.text = edituserInputValue;
+        console.log(todo);
+        todo.dueDate = editDateInput.value;
+        todo.category = editCategoryDropdown.value;
+        todo.priority = editPriorityDropdown.value;
+        todo.tags =  editTagsInput.value.split(',').map(tag => tag.trim());
+
+        let todoItemsContainer1  = document.getElementById("todoItemsContainer");
+        todoItemsContainer1.innerHTML = "";
+        todoList.forEach(todo =>{
+            createAndAppendTodo(todo);
+        });
+
+        let todoItemContainer = document.getElementById("todo"+todo.uniqueNo);
+        todoItemContainer.scrollIntoView({ behavior: 'smooth' });
+
+
+        editTodoContainer.style.display = "none";
+        localStorage.setItem("todoList", JSON.stringify(todoList));
+    }
 }
 
 
@@ -390,9 +481,9 @@ function createAndAppendSubTodo(subTodo, todoId) {
     inputElement.id = subcheckboxId;
     inputElement.checked = subTodo.isChecked;
 
-    // inputElement.onclick = function() {
-    //     onTodoStatusChange(subcheckboxId, sublabelId, subtodoId);
-    // };
+    inputElement.onclick = function() {
+        onSubTodoStatusChange(subcheckboxId, sublabelId, subtodoId,todoId);
+    };
 
     inputElement.classList.add("checkbox-input");
     subtodoElement.appendChild(inputElement);
@@ -838,19 +929,19 @@ function onSubTodoDrop(event) {
         let flag = false;
         for (todo of todoList) {
             for (subtask of todo.subTasks) {
-                if ("subtodo"+subtask.id === draggedsubTodoId) {
+                if ("subtodo" + subtask.id === draggedsubTodoId) {
                     flag = true;
                 }
             }
-            if(flag){
+            if (flag) {
                 const fromSubtaskId = todo.subTasks.findIndex(subtask => 'subtodo' + subtask.id === draggedsubTodoId);
                 const toSubtaskId = todo.subTasks.findIndex(subtask => 'subtodo' + subtask.id === droppedsubTodoId);
                 const [removed] = todo.subTasks.splice(fromSubtaskId, 1);
                 todo.subTasks.splice(toSubtaskId, 0, removed);
                 const subtodoItemsContainer = droppedSubTodoElement.parentElement;
                 subtodoItemsContainer.innerHTML = '<h2>Sub Tasks</h2>';
-                todo.subTasks.forEach(subtask =>{
-                    createAndAppendSubTodo(subtask, "todo"+todo.uniqueNo);
+                todo.subTasks.forEach(subtask => {
+                    createAndAppendSubTodo(subtask, "todo" + todo.uniqueNo);
                 }
                 );
 
@@ -865,3 +956,4 @@ function onSubTodoDrop(event) {
 // Add event listeners for subtask drag and drop
 document.addEventListener('dragover', onSubTodoDragOver);
 document.addEventListener('drop', onSubTodoDrop);
+

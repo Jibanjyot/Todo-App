@@ -29,16 +29,11 @@
                 Create <span class="create-task-heading-subpart">Task</span>
             </h1>
             <input type="text" id="todoUserInput" class="todo-user-input" placeholder="What needs to be done?" />
-
-            <!-- <div style="width: 20%; padding-bottom: 10px;">
-                <input type="text" id="categoryInput" placeholder="Add More Categories">
-                <button id="addCategoryButton">Add Category</button>
-            </div> -->
             <span>
                 <input type="datetime-local" id="dateInput" name="dateInput">
 
                 <select id="categoryDropdown">
-                    <option value="category">Category</option>
+                    <option value="">Category</option>
                     <option value="category1">Category 1</option>
                     <option value="category2">Category 2</option>
                     <option value="category3">Category 3</option>
@@ -46,7 +41,7 @@
                 </select>
 
                 <select id="priorityDropdown">
-                    <option value="priority">Priority</option>
+                    <option value="">Priority</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
@@ -57,6 +52,35 @@
 
             </span>
             <button class="button" id="addTodoButton">Add</button>
+            <div id="editTodoContainer" class="editTodoContainer">
+                <h1 class="create-task-heading">
+                    Edit <span class="create-task-heading-subpart">Task</span>
+                </h1>
+                <input type="text" id="editTodoUserInput" class="todo-user-input"/>
+                <span>
+                    <input type="datetime-local" id="editDateInput" name="dateInput">
+    
+                    <select id="editCategoryDropdown">
+                        <option value="">Category</option>
+                        <option value="category1">Category 1</option>
+                        <option value="category2">Category 2</option>
+                        <option value="category3">Category 3</option>
+    
+                    </select>
+    
+                    <select id="editPriorityDropdown">
+                        <option value="">Priority</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+    
+                    </select>
+    
+                    <input type="text" id="editTagsInput" class="todo-user-input" placeholder="Enter Tags (comma separated)" />
+    
+                </span>
+                <button class="button" id="editTodoButton">Edit</button>
+            </div>
 
             <h1 class="todo-items-heading">
                 My <span class="todo-items-heading-subpart">Tasks</span>
@@ -67,10 +91,11 @@
                 <div id="sort-container">
                 </div>
                 <input type="text" id="searchInput" placeholder="Search tasks">
-                <button id="searchTaskButton">Search</button>
+                <button id="searchTaskButton" >Search</button>
             </div>
 
-            <ul class="todo-items-container" ondragover="onDragOver(event)" ondrop="onDrop(event)" id="todoItemsContainer"></ul>
+            <ul class="todo-items-container" ondragover="onDragOver(event)" ondrop="onDrop(event)"
+                id="todoItemsContainer"></ul>
             <button class="button" id="saveTodoButton">Save</button>
             <h1 id="popUpMessage"> </h1>
         </div>
