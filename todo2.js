@@ -133,9 +133,7 @@ function onAddTodo() {
     let dueDateValue = document.getElementById('dateInput').value;
 
 
-    if (!dueDateValue) {
-        dueDateValue = parseDueDate(userInputValue);
-    }
+    
 
     // get category
     let categoryValue = document.getElementById('categoryDropdown').value;
