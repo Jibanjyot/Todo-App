@@ -79,7 +79,7 @@ displayCategories();
 const addToCategoryBtn = document.getElementById("addToCategoryBtn");
 addToCategoryBtn.onclick = function () {
     let addToCategory = document.getElementById("addToCategory").value;
-    if(addToCategory === ""){
+    if (addToCategory === "") {
         alert("Enter Valid Category");
         return;
     }
@@ -675,7 +675,7 @@ function displayCategoryFilter() {
     let categoryfilterOptions = [...categories, ...[{ value: 'pending', text: 'Pending' },
     { value: 'completed', text: 'Completed' },
     { value: 'missed', text: 'Missed' }]]
-    categoryfilterSelect.innerHTML="";
+    categoryfilterSelect.innerHTML = "";
     categoryfilterSelect.setAttribute('id', 'categoryFilter');
     categoryfilterOptions.forEach(option => {
         const optionElement = document.createElement('option');
