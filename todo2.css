@@ -86,6 +86,13 @@
     width: 80px;
 }
 
+.search-add-button{
+    background-color: #1b3590;
+    border: 1px solid #1b3590;
+    color: white;
+    border-radius: 5px;
+}
+
 .label-container {
     background-color: #e6f6ff;
     width: 100%;
