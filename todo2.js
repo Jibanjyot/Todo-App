@@ -28,32 +28,70 @@ saveTodoButton.onclick = function () {
 
 
 // add categories
-const categories = [
-    { value: "", text: "Category" },
-    { value: "category1", text: "Category 1" },
-    { value: "category2", text: "Category 2" },
-    { value: "category3", text: "Category 3" }
+let categories = [
+    { value: "all", text: "Category" },
+    { value: "Category 1", text: "Category 1" },
+    { value: "Category 2", text: "Category 2" },
+    { value: "Category 3", text: "Category 3" }
 ];
+
+function getCategoryListFromLocalStorage() {
+    let stringifiedCategoryList = localStorage.getItem("categories");
+    let parsedCategoryList = JSON.parse(stringifiedCategoryList);
+    // console.log(parsedTodoList);
+    if (parsedCategoryList === null) {
+        return [];
+    } else {
+        return parsedCategoryList;
+    }
+}
+
+let addedCategories = getCategoryListFromLocalStorage();
+categories = [...categories, ...addedCategories];
+
 
 // Get the select element by its id
 const categoryDropdown = document.getElementById("categoryDropdown");
 const editCategoryDropdown = document.getElementById("editCategoryDropdown");
 
 // Create and add options to the select element using the categories array
-categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    categoryDropdown.appendChild(option);
-});
+function displayCategories() {
+    categoryDropdown.innerHTML = "";
+    categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category.value;
+        option.textContent = category.text;
+        categoryDropdown.appendChild(option);
+    });
+    editCategoryDropdown.innerHTML = "";
+    categories.forEach(category => {
+        const option = document.createElement("option");
+        option.value = category.value;
+        option.textContent = category.text;
+        editCategoryDropdown.appendChild(option);
+    });
+}
+displayCategories();
 
-categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    editCategoryDropdown.appendChild(option);
-});
 
+
+
+const addToCategoryBtn = document.getElementById("addToCategoryBtn");
+addToCategoryBtn.onclick = function () {
+    let addToCategory = document.getElementById("addToCategory").value;
+    if(addToCategory === ""){
+        alert("Enter Valid Category");
+        return;
+    }
+    let addToCategoryValue = addToCategory.trim();
+    // console.log(addToCategoryValue);
+    addedCategories.push({ value: addToCategoryValue, text: addToCategory });
+    categories.push({ value: addToCategoryValue, text: addToCategory });
+    localStorage.setItem("categories", JSON.stringify(addedCategories));
+    displayCategories();
+    displayCategoryFilter();
+    document.getElementById("addToCategory").value = "";
+}
 
 
 const priorities = [
@@ -93,7 +131,7 @@ function onAddTodo() {
 
     // get due date
     let dueDateValue = document.getElementById('dateInput').value;
-    
+
 
     if (!dueDateValue) {
         dueDateValue = parseDueDate(userInputValue);
@@ -128,6 +166,7 @@ function onAddTodo() {
     todoList.push(newTodo);
     createAndAppendTodo(newTodo);
     userInputElement.value = "";
+    localStorage.setItem("todoList", JSON.stringify(todoList));
 }
 
 addTodoButton.onclick = function () {
@@ -631,26 +670,25 @@ filterLabel.classList.add('filter-label');
 filterContainer.appendChild(filterLabel);
 
 // category filter
-let categoryfilterOptions = [
-    { value: 'all', text: 'Category' },
-    { value: 'category1', text: 'Category 1' },
-    { value: 'category2', text: 'Category 2' },
-    { value: 'category3', text: 'Category 3' },
-    { value: 'pending', text: 'Pending' },
-    { value: 'completed', text: 'Completed' },
-    { value: 'missed', text: 'Missed' }
-];
 const categoryfilterSelect = document.createElement('select');
-categoryfilterSelect.setAttribute('id', 'categoryFilter');
-categoryfilterOptions.forEach(option => {
-    const optionElement = document.createElement('option');
-    optionElement.setAttribute('value', option.value);
-    optionElement.textContent = option.text;
-    categoryfilterSelect.appendChild(optionElement);
-});
+function displayCategoryFilter() {
+    let categoryfilterOptions = [...categories, ...[{ value: 'pending', text: 'Pending' },
+    { value: 'completed', text: 'Completed' },
+    { value: 'missed', text: 'Missed' }]]
+    categoryfilterSelect.innerHTML="";
+    categoryfilterSelect.setAttribute('id', 'categoryFilter');
+    categoryfilterOptions.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.setAttribute('value', option.value);
+        optionElement.textContent = option.text;
+        categoryfilterSelect.appendChild(optionElement);
+    });
 
-categoryfilterSelect.addEventListener('change', applyCategoryFilter);
-filterContainer.appendChild(categoryfilterSelect);
+    categoryfilterSelect.addEventListener('change', applyCategoryFilter);
+    filterContainer.appendChild(categoryfilterSelect);
+}
+
+displayCategoryFilter();
 
 function applyCategoryFilter() {
     const categoryfilter = document.getElementById('categoryFilter').value;
@@ -1030,7 +1068,7 @@ function onSubTodoDrop(event) {
                     createAndAppendSubTodo(subtask, "todo" + todo.uniqueNo);
                 }
                 );
-
+                localStorage.setItem("todoList", JSON.stringify(todoList));
                 break;
             }
         }
