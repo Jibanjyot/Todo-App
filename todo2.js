@@ -26,6 +26,62 @@ saveTodoButton.onclick = function () {
     popUpMessage.textContent = "Hurrah , Everything has been saved! Lets complete what is left of the day";
 };
 
+
+// add categories
+const categories = [
+    { value: "", text: "Category" },
+    { value: "category1", text: "Category 1" },
+    { value: "category2", text: "Category 2" },
+    { value: "category3", text: "Category 3" }
+];
+
+// Get the select element by its id
+const categoryDropdown = document.getElementById("categoryDropdown");
+const editCategoryDropdown = document.getElementById("editCategoryDropdown");
+
+// Create and add options to the select element using the categories array
+categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    categoryDropdown.appendChild(option);
+});
+
+categories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    editCategoryDropdown.appendChild(option);
+});
+
+
+
+const priorities = [
+    { value: "", text: "Priority" },
+    { value: "low", text: "Low" },
+    { value: "medium", text: "Medium" },
+    { value: "high", text: "High" }
+];
+
+// Get the select element by its id
+const priorityDropdown = document.getElementById("priorityDropdown");
+const editPriorityDropdown = document.getElementById("editPriorityDropdown");
+
+// Create and add options to the select element using the priorities array
+priorities.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    priorityDropdown.appendChild(option);
+});
+priorities.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.value;
+    option.textContent = category.text;
+    editPriorityDropdown.appendChild(option);
+});
+
+
 function onAddTodo() {
     let userInputElement = document.getElementById("todoUserInput");
     let userInputValue = userInputElement.value;
@@ -37,6 +93,7 @@ function onAddTodo() {
 
     // get due date
     let dueDateValue = document.getElementById('dateInput').value;
+    
 
     if (!dueDateValue) {
         dueDateValue = parseDueDate(userInputValue);
@@ -59,7 +116,7 @@ function onAddTodo() {
     let newTodo = {
         text: userInputValue,
         uniqueNo: todosCount,
-        dueDate: changeDateFormat(dueDateValue),
+        dueDate: dueDateValue ? changeDateFormat(dueDateValue) : "",
         originalDueDate: dueDateValue,
         category: categoryValue,
         priority: priorityValue,
@@ -935,9 +992,6 @@ todoItemsContainer.addEventListener('dragover', onDragOver);
 todoItemsContainer.addEventListener('drop', onDrop);
 
 
-
-
-
 let draggedSubTodoElement = null;
 function onSubTodoDragStart(event) {
     draggedSubTodoElement = event.target.closest('.todo-item-container');;
@@ -1004,7 +1058,7 @@ function changeDateFormat(datetimeString) {
 }
 
 
-
+// due date filter
 let filterStartDateInput = document.getElementById("filterStartDateInput");
 filterStartDateInput.onchange = onFilterDateChange;
 
@@ -1036,58 +1090,9 @@ function onFilterDateChange() {
 
 
 
-// add categories
-const categories = [
-    { value: "", text: "Category" },
-    { value: "category1", text: "Category 1" },
-    { value: "category2", text: "Category 2" },
-    { value: "category3", text: "Category 3" }
-];
-
-// Get the select element by its id
-const categoryDropdown = document.getElementById("categoryDropdown");
-const editCategoryDropdown = document.getElementById("editCategoryDropdown");
-
-// Create and add options to the select element using the categories array
-categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    categoryDropdown.appendChild(option);
-});
-
-categories.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    editCategoryDropdown.appendChild(option);
-});
 
 
 
-const priorities = [
-    { value: "", text: "Priority" },
-    { value: "low", text: "Low" },
-    { value: "medium", text: "Medium" },
-    { value: "high", text: "High" }
-];
 
-// Get the select element by its id
-const priorityDropdown = document.getElementById("priorityDropdown");
-const editPriorityDropdown = document.getElementById("editPriorityDropdown");
-
-// Create and add options to the select element using the categories array
-priorities.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    priorityDropdown.appendChild(option);
-});
-priorities.forEach(category => {
-    const option = document.createElement("option");
-    option.value = category.value;
-    option.textContent = category.text;
-    editPriorityDropdown.appendChild(option);
-});
 
 
