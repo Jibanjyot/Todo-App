@@ -1,6 +1,6 @@
 ## Start Project
 
-* Navigate to each folder and run the html file using live server.
+* Navigate to the root of the folder and run the html file using live server.
 
 ## How it works
 **Please click on the save button to save any progress.**
