@@ -3,7 +3,7 @@
 * Navigate to the root of the folder and run the html file using live server.
 
 ## How it works
-**Please click on the save button to save any progress.**
+**Please click on the save button at the bottom to save any progress before refreshing.**
 * **Add Todo:** To add a todo first type it in the input box, choose the due date, choose the category from an existing list of categories, priority from the existing list and tags in the input box below which should be comma separated. and then click the add button. The todo will be displayed below under My Tasks Section. Now it is not stored in the local storage. To store or save everything click on the save button.
 
 * **Add Categories:** There is option to add a custom catgegory where a input box has been provided and a button to save the custom category.
