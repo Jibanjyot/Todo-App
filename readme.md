@@ -6,7 +6,7 @@
 **Please click on the save button to save any progress.**
 * **Add Todo:** To add a todo first type it in the input box, choose the due date, choose the category from an existing list of categories, priority from the existing list and tags in the input box below which should be comma separated. and then click the add button. The todo will be displayed below under My Tasks Section. Now it is not stored in the local storage. To store or save everything click on the save button.
 
-* **Edit Todo:**To juts edit the text click on the edit icon change the text and click outside to save it. To edit the complete details click on the edit details. A Edit Task element will be created and user will be scrolled to the window will pre filled details. Modify the necessary details and click on edit. The edit box will disappear and user will be scrolled to the edited todo, which is now saved.
+* **Edit Todo:** To juts edit the text click on the edit icon change the text and click outside to save it. To edit the complete details click on the edit details. A Edit Task element will be created and user will be scrolled to the window will pre filled details. Modify the necessary details and click on edit. The edit box will disappear and user will be scrolled to the edited todo, which is now saved.
 
 * **Delete Todo:** To delete a todo click on the delete icon and click on save.
 
