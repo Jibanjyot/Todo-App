@@ -534,7 +534,8 @@ function onAddSubTodo(todo) {
         // console.log("here");
         // popUpContainer.style.display = "none";
         popUp.style.display = "none";
-        document.body.removeChild(popUpContainer);
+        localStorage.setItem("todoList", JSON.stringify(todoList));
+        document.body.removeChild(popUpContainer);        
     }
 
 }
@@ -825,7 +826,7 @@ function sortTasks() {
 
     switch (sortOption) {
         case 'dueDate':
-            sortedList.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            sortedList.sort((a, b) => new Date(a.originalDueDate) - new Date(b.originalDueDate));
             break;
         case 'priority':
             sortedList.sort((a, b) => priorityToValue(a.priority) - priorityToValue(b.priority));
